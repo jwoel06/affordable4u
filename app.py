@@ -1,10 +1,27 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
+from counselor import MyCounselor
 
 app = Flask(__name__)
 
+chatbot = MyCounselor()
+
 @app.route("/")
-def helloworld():
+def home():
     return render_template('index.html')
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    message = data['message']
+
+    response = chatbot.counselor_chat(message)
+
+    return jsonify({"reply": response})
+
+
+@app.route("/faq")
+def faq():
+    return render_template('faq.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
