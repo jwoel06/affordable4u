@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .section {
+            background: white;
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        /* Accordion Style */
+        .faq-basic {
+            margin: 20px 0;
+        }
+
+        .faq-basic .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .faq-basic .faq-question {
+            background: #f8f9fa;
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #2c3e50;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-basic .faq-question:hover {
+            background: #e9ecef;
+        }
+
+        .faq-basic .faq-question::after {
+            content: '+';
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #3498db;
+            transition: transform 0.3s;
+        }
+
+        .faq-basic .faq-question.active::after {
+            content: '−';
+            transform: rotate(180deg);
+        }
+
+        .faq-basic .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 20px;
+            background: white;
+        }
+
+        .faq-basic .faq-answer.active {
+            max-height: 500px;
+            padding: 20px;
+        }
+
+        /* Utility Classes */
+        .divider {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #3498db, transparent);
+            margin: 50px 0;
+        }
+
+        .badge {
+            background: #3498db;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        code {
+            background: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+
+        @media (max-width: 768px) {
+            .faq-two-column {
+                grid-template-columns: 1fr;
+            }
+            .faq-category-list {
+                position: static;
+            }
+            .faq-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ACCORDION -->
+    <div class="section">
+        <h2 class="section-title">FAQ</h2>
+        <p class="section-subtitle">Frequently Asked Questions About Affordable4U</p>
+
+        <div class="faq-basic">
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    What is Affordable4U?
+                </div>
+                <div class="faq-answer">
+                    Affordable4U is an expert college counselor assistant dedicated to helping prospective undergraduate
+                    students identify and explore colleges that align with their needs, circumstances, and goals. 
+                    Our mission is to democratize access to high-quality college advising, with particular attention to 
+                    students from vulnerable populations, first-generation students, low-income families, and underrepresented communities.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    How does Affordable4U guide underserved students through college advising?
+                </div>
+                <div class="faq-answer">
+                    Affordable4U prioritizes recommending colleges that offer high educational equity. 
+                    This includes highly weighing metrics of strong educational outcomes, low debt burden, economic mobility, and strong equity record (demonstrated success in 
+                    supporting students from all backgrounds).
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    How are these metrics of educational equity measured?
+                </div>
+                <div class="faq-answer">
+                    We measure high educational equity based off a college's low affordability gap, 
+                    low weekly work hours needed to work at state minimum wage to cover the affordability gap, 
+                    low median debt, high earnings 10 years after starting at their institution, 
+                    small racial equity gaps, high Pell Grant share, and good outcomes for student-parents.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    Who can benefit from this?
+                </div>
+                <div class="faq-answer">
+                    Students, families, educators, and policymakers all benefit from understanding college 
+                    affordability metrics and trends. Above all, we aim to suppport first-gen and low-income 
+                    students by personalizing the college decision process through guided advising, 
+                    and asking the questions that matter the most for vulnerable students.
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- JavaScript for Interactive Features -->
+    <script>
+        // Accordion Toggle Function
+        function toggleAnswer(element) {
+            const answer = element.nextElementSibling;
+            const isActive = answer.classList.contains('active');
+            
+            // Close all answers (optional - remove if you want multiple open at once)
+            // document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('active'));
+            // document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
+            
+            // Toggle current answer
+            if (isActive) {
+                answer.classList.remove('active');
+                element.classList.remove('active');
+            } else {
+                answer.classList.add('active');
+                element.classList.add('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
