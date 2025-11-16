@@ -1,6 +1,6 @@
 Affordable4U - College Counseling Chatbot
 
-**Note: This is a demo application for educational purposes.**
+**DEMO ONLY - NOT FOR PRODUCTION USE**
 
 Overview
 Affordable4U is a Flask-based web application that provides AI-powered college counseling focused on equity and accessibility. The system helps prospective undergraduate students, particularly those from underserved populations, identify colleges that offer high value, low debt burden, strong equity records, and economic mobility opportunities.
@@ -129,3 +129,7 @@ Anthropic Claude chosen for strong reasoning and function-calling capabilities e
 Pandas selected for its CSV handling and data transformation capabilities
 Flask chosen over Django for simplicity since no admin interface or ORM needed
 CDN-hosted frontend libraries reduce bundle size and leverage browser caching
+
+## License
+
+**All Rights Reserved** - This code is provided for educational/demo purposes only. Not licensed for commercial or production use.
