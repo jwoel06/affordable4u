@@ -13,6 +13,9 @@ def home():
 def chat():
     data = request.get_json()
     message = data['message']
+    degree = data.get('degree_type', '4year')
+
+    chatbot.set_degree_preference(degree)
 
     response = chatbot.counselor_chat(message)
 
@@ -22,6 +25,10 @@ def chat():
 @app.route("/faq")
 def faq():
     return render_template('faq.html')
+
+@app.route("/about")
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
