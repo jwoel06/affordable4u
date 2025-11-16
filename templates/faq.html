@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ</title>
@@ -13,6 +18,12 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+            min-height: 100vh;
         }
 
         .section {
@@ -117,6 +128,67 @@
             color: #e74c3c;
         }
 
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: #202123;
+            color: white;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+    
+        .sidebar-header {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 20px 1fr;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sidebar-header i {
+            text-align: center;
+        }
+    
+        .sidebar-item {
+            padding: 12px 20px;
+            margin: 4px 20px 4px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #ececf1;
+            display: grid;
+            grid-template-columns: 20px 1fr;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .sidebar-item:hover {
+            background: #2a2b32;
+            color: #ececf1;
+        }
+        
+        .sidebar-item i {
+            text-align: center;
+        }
+    
+        .sidebar-footer {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 20px 1fr;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+        }
+        
+        .sidebar-footer i {
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .faq-two-column {
                 grid-template-columns: 1fr;
@@ -128,9 +200,36 @@
                 grid-template-columns: 1fr;
             }
         }
+
     </style>
 </head>
 <body>
+    <div class="main-content">
+   <!--sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="bi bi-geo-alt"></i>
+            <div style="font-size: 20px; color: #ffffff;">Affordable4U</div>
+        </div>
+        
+        <a href="{{ url_for('home') }}" class="sidebar-item">
+            <i class="bi bi-house-fill"></i>
+            Home
+        </a>
+        <a href="{{ url_for('faq') }}" class="sidebar-item">
+            <i class="bi bi-question-circle"></i>
+            FAQ
+        </a>
+        <a href="{{ url_for('about') }}" class="sidebar-item">
+            <i class="bi bi-bookmark-fill"></i>
+            About Us
+        </a>
+    
+        <div class="sidebar-footer">
+            <i class="bi bi-person-circle" style="font-size: 20px;"></i>
+            <span>User</span>
+        </div>
+    </div>
 
     <!-- ACCORDION -->
     <div class="section">
@@ -186,7 +285,7 @@
             </div>
         </div>
     </div>
-
+</div>
         <!-- JavaScript for Interactive Features -->
     <script>
         // Accordion Toggle Function

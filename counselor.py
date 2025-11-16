@@ -3,34 +3,21 @@ from anthropic import Anthropic
 import sqlite3
 load_dotenv()
 
-tools = [
-    {
-        "name": "query_affordability",
-        "description": "Search colleges by cost, tuition, financial aid, affordability gaps, work-study.",
+tools = [    {
+        "name": "query_equity_outcomes",
+        "description": "Search colleges specifically for equity metrics: serves underserved populations, Pell grant recipients, debt-to-income ratios, social impact scores, champion/hidden gem status.",
         "input_schema": {
             "type": "object",
             "properties": {
                 "state": {"type": "string", "description": "State abbreviation"},
-                "max_net_price": {"type": "number", "description": "Maximum net price"},
-                "hbcu": {"type": "boolean", "description": "HBCU status"},
-                "hsi": {"type": "boolean", "description": "Hispanic-Serving Institution"},
-            }
-        }
-    },
-    {
-        "name": "query_demographics",
-        "description": "Search colleges by diversity, graduation rates by race/gender, enrollment demographics, majors awarded, SAT/ACT scores, retention rates.",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "state": {"type": "string", "description": "State of institution"},
-                "min_percent_women": {"type": "number", "description": "Minimum % women enrolled"},
-                "min_percent_latino": {"type": "number", "description": "Minimum % Latino students"},
-                "min_percent_black": {"type": "number", "description": "Minimum % Black students"},
-                "min_percent_asian": {"type": "number", "description": "Minimum % Asian students"},
-                "min_graduation_rate": {"type": "number", "description": "Minimum 6-year graduation rate"},
-                "max_student_faculty_ratio": {"type": "number", "description": "Maximum student-to-faculty ratio"},
-                "sector": {"type": "string", "description": "Public/Private sector"},
+                "min_pell_pct": {"type": "number", "description": "Minimum % Pell Grant recipients"},
+                "min_black_pct": {"type": "number", "description": "Minimum % Black students"},
+                "min_latino_pct": {"type": "number", "description": "Minimum % Latino students"},
+                "max_debt_to_income": {"type": "number", "description": "Maximum debt-to-income ratio"},
+                "min_social_impact_score": {"type": "number", "description": "Minimum social impact score"},
+                "serves_underserved": {"type": "boolean", "description": "Serves underserved populations well"},
+                "champion": {"type": "boolean", "description": "Champion schools"},
+                "hidden_gem": {"type": "boolean", "description": "Hidden gem schools"},
             }
         }
     }
@@ -197,7 +184,7 @@ Remember: Your role is to be a knowledgeable, supportive guide who helps student
 
 class MyCounselor: 
 
-    def __init__(self, db_path='college.db'):
+    def __init__(self, db_path='new_college.db'):
         self.client = Anthropic()
         self.conversation_history = []
         self.db_path = db_path
@@ -206,15 +193,14 @@ class MyCounselor:
     def set_degree_preference(self, degree_type):
         self.degree_preference = degree_type
     
-    def query_demographics(self, state=None, min_percent_women=None, 
-                        min_percent_latino=None, min_percent_black=None,
-                        min_graduation_rate=None, max_student_faculty_ratio=None, **kwargs):
+    def query_equity_outcomes(self, **filters):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        query = "SELECT * FROM demographics WHERE 1=1"
+        query = "SELECT `Institution Name`, `State Abbreviation`, `net_price`, `median_debt`, `earnings_10yr`, `pell_pct`, `serves_underserved`, `champion`, `hidden_gem`, `social_impact_score` FROM social WHERE 1=1"
         params = []
-
+        
+        # Degree preference filter
         if self.degree_preference == 'community':
             query += " AND `Institution Name` LIKE ?"
             params.append('%Community%')
@@ -222,78 +208,27 @@ class MyCounselor:
             query += " AND `Institution Name` NOT LIKE ?"
             params.append('%Community%')
         
-        if state:
-            query += " AND `State of Institution` = ?"
-            params.append(state)
-        
-        if min_percent_women:
-            query += " AND `Percent of Women Undergraduates` >= ?"
-            params.append(min_percent_women)
-        
-        if min_percent_latino:
-            query += " AND `Percent of Latino Undergraduates` >= ?"
-            params.append(min_percent_latino)
-        
-        if min_percent_black:
-            query += " AND `Percent of Black or African American Undergraduates` >= ?"
-            params.append(min_percent_black)
-        
-        if min_graduation_rate:
-            query += " AND `Bachelor's Degree Graduation Rate Bachelor Degree Within 6 Years - Total` >= ?"
-            params.append(min_graduation_rate)
-        
-        if max_student_faculty_ratio:
-            query += " AND `Student-to-Faculty Ratio` <= ?"
-            params.append(max_student_faculty_ratio)
-        
-        query += " LIMIT 20"
-        
-        cursor.execute(query, params)
-        results = cursor.fetchall()
-        conn.close()
-        
-        return results
-    
-    def query_affordability(self, state=None, max_net_price=None, max_tuition=None, 
-                        sector=None, hbcu=None, hsi=None, **kwargs):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        
-        query = "SELECT * FROM affordability WHERE 1=1"
-        params = []
-
-        if self.degree_preference == 'community':
-            query += " AND `Institution Name` LIKE ?"
-            params.append('%Community%')
-        elif self.degree_preference == '4year':
-            query += " AND `Institution Name` NOT LIKE ?"
-            params.append('%Community%')
-        
-        if state:
+        if filters.get('state'):
             query += " AND `State Abbreviation` = ?"
-            params.append(state)
+            params.append(filters['state'])
         
-        if max_net_price:
-            query += " AND `Net Price` <= ?"
-            params.append(max_net_price)
+        if filters.get('min_pell_pct'):
+            query += " AND `pell_pct` >= ?"
+            params.append(filters['min_pell_pct'])
         
-        if max_tuition:
-            query += " AND `Cost of Attendance: In State` <= ?"
-            params.append(max_tuition)
+        if filters.get('serves_underserved') is not None:
+            query += " AND `serves_underserved` = ?"
+            params.append(1 if filters['serves_underserved'] else 0)
         
-        if sector:
-            query += " AND `Sector Name` = ?"
-            params.append(sector)
+        if filters.get('champion') is not None:
+            query += " AND `champion` = ?"
+            params.append(1 if filters['champion'] else 0)
         
-        if hbcu is not None:
-            query += " AND HBCU = ?"
-            params.append(1 if hbcu else 0)
+        if filters.get('hidden_gem') is not None:
+            query += " AND `hidden_gem` = ?"
+            params.append(1 if filters['hidden_gem'] else 0)
         
-        if hsi is not None:
-            query += " AND HSI = ?"
-            params.append(1 if hsi else 0)
-        
-        query += " LIMIT 20"
+        query += " LIMIT 10"
         
         cursor.execute(query, params)
         results = cursor.fetchall()
@@ -327,10 +262,8 @@ class MyCounselor:
             tool_results = []
             for block in response.content:
                 if block.type == "tool_use":
-                    if block.name == "query_affordability":
-                        results = self.query_affordability(**block.input)
-                    elif block.name == "query_demographics":
-                        results = self.query_demographics(**block.input)
+
+                    results = self.query_equity_outcomes(**block.input)
                     
                     tool_results.append({
                         "type": "tool_result",
