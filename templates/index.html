@@ -297,7 +297,7 @@
     </style>
 </head>
 <body>
-    <div id="nameModal" class="modal d-flex" style="display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;">
+    <div id="nameModal" style="display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000;">
         <div class="card" style="width: 400px; padding: 30px;">
             <h3 class="mb-3">Welcome! What's your name?</h3>
             <input type="text" id="nameInput" class="form-control" placeholder="Enter your name...">
@@ -476,7 +476,7 @@
         async function generateResponse(query) {
             //fetch response
             try {
-                const response = await fetch('api/chat' ,{
+                const response = await fetch('api/chat', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
